@@ -12,7 +12,7 @@
   html,body{min-height:100%}
   body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',-apple-system,sans-serif;
        display:flex;flex-direction:column;align-items:center;justify-content:center;
-       padding:64px 18px 40px}
+       padding:58px 18px 28px}
   body[data-lang=es] .only-en{display:none}
   body[data-lang=en] .only-es{display:none}
   .corner{position:fixed;top:16px;z-index:10;display:flex;align-items:center}
@@ -24,7 +24,7 @@
            background:transparent;cursor:pointer;opacity:.75;justify-content:center;padding:0}
   #btnMute:hover{opacity:1}
   #btnMute svg{stroke:var(--ink);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-  .main{display:flex;flex-direction:column;align-items:center;width:100%}
+  .main{display:flex;flex-direction:column;align-items:center;width:100%;margin-top:-12px}
   body.pre .main{display:none!important}
   body.in .intro{display:none}
   .intro{display:flex;align-items:center;justify-content:center;width:100%}
@@ -52,14 +52,14 @@
   .tipwrap{display:flex;gap:11px;align-items:center}
   .tipwrap svg{flex:0 0 auto}
   canvas{display:block;width:100%;height:auto}
-  .caption{width:min(94vw,720px);text-align:center;margin-top:26px}
+  .caption{width:min(94vw,720px);text-align:center;margin-top:3px}
   .what{display:inline-block;font-size:15px;font-weight:400;color:var(--ink);
-        cursor:pointer;user-select:none;transition:opacity .2s;margin-top:10px}
+        cursor:pointer;user-select:none;transition:opacity .2s;margin-top:0}
   .what:hover{opacity:.75}
   .caption #desc,.caption #invite{display:none}
   .caption.open #desc{display:block}
   .caption.open #invite{display:block}
-  .hawcfoot{display:none;margin-top:16px;font-size:11.5px}
+  .hawcfoot{display:none;margin-top:7px;font-size:11.5px}
   .caption.open .hawcfoot{display:block}
   .hawcfoot a{color:var(--dim);text-decoration:none}
   .hawcfoot a:hover{color:var(--ink)}
@@ -72,7 +72,7 @@
                  border:1.5px solid var(--ink);background:transparent;color:var(--ink);
                  font-family:inherit;margin-left:6px}
   .invite button:hover{background:var(--ink);color:var(--bg)}
-  .scorebox{display:none;flex-direction:column;align-items:center;gap:10px;margin-top:16px}
+  .scorebox{display:none;flex-direction:column;align-items:center;gap:7px;margin-top:8px}
   .scorebox.visible{display:flex}
   .dots{display:flex;gap:8px}
   .dots span{width:15px;height:15px;border-radius:50%;background:rgb(238,229,212);
@@ -83,17 +83,24 @@
   #btnExit{padding:5px 13px;font-size:12.5px;font-weight:500;cursor:pointer;border-radius:9px;
            border:1px solid var(--dim);background:transparent;color:var(--dim);font-family:inherit}
   #btnExit:hover{color:var(--ink);border-color:var(--ink)}
-  .guessrow{display:none;justify-content:center;gap:10px;margin-top:14px}
+  .hintbox{display:none;text-align:center;margin-top:6px;max-width:min(94vw,640px)}
+  .hintbox.offer{display:block}
+  #hintlink{font-size:13px;color:var(--dim);cursor:pointer;user-select:none}
+  #hintlink:hover{color:var(--ink)}
+  #hinttext{display:none;font-size:13px;line-height:1.55;color:var(--ink);margin-top:6px}
+  .hintbox.open #hinttext{display:block}
+  .resdet{color:var(--dim);font-size:14px}
+  .guessrow{display:none;justify-content:center;gap:10px;margin-top:8px}
   .guessrow.visible{display:flex}
   .guessrow button{padding:9px 18px;font-size:15px;font-weight:600;cursor:pointer;border-radius:11px;
                    border:1.5px solid var(--dim);background:transparent;color:var(--ink);font-family:inherit}
   .guessrow button:hover{border-color:var(--ink)}
   #desc{width:min(94vw,720px);text-align:center;font-size:16px;line-height:1.55;color:var(--ink);
-        min-height:25px;margin-top:16px}
+        min-height:25px;margin-top:5px}
   #desc .who{font-weight:600}
   #desc .who:not(.q){cursor:pointer}
   #evdetail{display:none;visibility:hidden;height:20px;line-height:20px;overflow:hidden;
-            font-size:13.5px;color:var(--dim);margin:14px 0} /* equal space above/below: sits midway */
+            font-size:13.5px;color:var(--dim);margin:5px 0} /* equal space above/below: sits midway */
   .caption.open #evdetail,.caption.ingame #evdetail{display:block}
   #evdetail.show{visibility:visible}
   #evdetail a{color:var(--dim);text-decoration:none}
@@ -153,6 +160,13 @@
   <button id="btnExit" onclick="toggleGame()" data-en="exit game" data-es="salir del juego"></button>
 </div>
 
+<div class="hintbox" id="hintbox">
+  <span id="hintlink" role="button" tabindex="0" data-en="Hints?" data-es="¿Pistas?"></span>
+  <p id="hinttext">
+    <span class="only-es"><b style="color:var(--gamma)">Rayo gamma:</b> una sola ola suave y compacta que sube por el arreglo; suena como un arpegio limpio. <b style="color:var(--hadron)">Rayo cósmico:</b> cascada grumosa e irregular, con fragmentos que llegan tarde y aislados (zumbidos graves al final).</span>
+    <span class="only-en"><b style="color:var(--gamma)">Gamma ray:</b> a single smooth, compact wave sweeping the array; it sounds like a clean arpeggio. <b style="color:var(--hadron)">Cosmic ray:</b> a clumpy, ragged cascade with late, isolated fragments (low buzzes at the end).</span>
+  </p>
+</div>
 <div class="guessrow" id="guessrow">
   <button onclick="guess('g')">γ gamma</button>
   <button onclick="guess('h')" data-en="cosmic ray" data-es="rayo cósmico"></button>
@@ -190,6 +204,8 @@ let lang='es', started=false, muted=false;
 const COARSE=!!(window.matchMedia&&window.matchMedia('(hover: none), (pointer: coarse)').matches); // phones/tablets
 let game=false, mystery=null, awaiting=false, score=0;
 const TARGET=10;
+const ALLOW=[10,8,6,4,2,0];       // allowed errors per level; pass 10 correct to climb
+let level=0, errs=0, replays=0, celebrating=false;
 const BASE_DUR=5400;
 let events={g:[],h:[]};
 let AC=null, master=null, runGain=null, anim=null, ghost=null, runId=0;
@@ -422,13 +438,13 @@ function describe(ev,hide,prefix){
   d.innerHTML=(lastDesc.prefix||'')+body;
   updateDetail();
 }
-function play(ev,hideType){
+function play(ev,hideType,durOverride){
   ensureAudio();
   runId++;paused=false;
   if(AC.state==='suspended')AC.resume();
   if(runGain)runGain.gain.setTargetAtTime(0,AC.currentTime,0.07);
   runGain=AC.createGain();runGain.connect(master);
-  const hits=ev.ph, dur=BASE_DUR;
+  const hits=ev.ph, dur=durOverride||BASE_DUR;
   const t0=AC.currentTime+0.12;
   const NB=COARSE?85:130; // audio note budget (lighter on mobile)
   const stp=Math.max(1,Math.ceil(hits.length/NB));
@@ -436,13 +452,20 @@ function play(ev,hideType){
     const late=isLate(ev,hits[i][1]);
     if(late||i%stp===0)pluck(t0+hits[i][1]*dur/1000,hits[i][2],late); // every straggler buzzes
   }
-  describe(ev,hideType);
+  if(game&&hideType&&lastDesc&&!lastDesc.hide){
+    // keep the answer (correct/incorrect + details) visible until 3/4 of this event
+    const me=ev;
+    setTimeout(()=>{if(game&&awaiting&&mystery===me)describe(me,true);},Math.round(dur*0.75));
+  }else{
+    describe(ev,hideType);
+  }
   anim={ev,hits,dur,start:performance.now()+120,lit:{},hi:0,id:runId};
 }
 function endPlayback(){
+  if(game&&awaiting&&anim){anim.done=true;return;} // mystery stays on screen until answered
   if(anim)ghost={lit:anim.lit,start:performance.now()};
   anim=null;paused=false;
-  if(game){if(!awaiting)setTimeout(()=>{if(game&&!anim&&!awaiting)newMystery();},350);}
+  if(game){if(!awaiting)setTimeout(()=>{if(game&&!anim&&!awaiting)newMystery();},950);}
   else setTimeout(()=>{if(!anim&&!game)autoAdvance();},160);
 }
 function autoAdvance(){
@@ -477,7 +500,7 @@ function drawGhost(now){
 function drawAnim(now){
   if(!anim)return;
   const ev=anim.ev;
-  const el=(paused?pausedAt:now)-anim.start, f=el/anim.dur;
+  const el=(paused?pausedAt:now)-anim.start, f=anim.done?1:el/anim.dur;
   while(anim.hi<anim.hits.length&&anim.hits[anim.hi][1]<=f){
     const h=anim.hits[anim.hi];
     anim.lit[h[0]]={q:h[2],t:h[1],late:isLate(ev,h[1]),c:CFLAG&&CFLAG[h[0]]};
@@ -490,17 +513,32 @@ function drawAnim(now){
     const age=Math.min(Math.max((f-L.t)*anim.dur/2600,0),1);
     drawHit(ctx,x,y,L,age);
   }
-  if(el>anim.dur+700&&anim.id===runId)endPlayback();
+  if(el>anim.dur+700&&anim.id===runId&&!anim.done)endPlayback();
 }
 
 // ===================== guess game (to 10) =====================
+function updateHints(){
+  const hb=$('hintbox');
+  hb.classList.toggle('offer',game&&errs>=3);
+  if(!game)hb.classList.remove('open');
+}
+function flashCounter(ok){
+  const s=$('scoretxt');
+  s.style.transition='color .15s';
+  s.style.color=ok?'var(--gamma)':'var(--hadron)';
+  setTimeout(()=>{s.style.color='';},900);
+}
 function renderScore(){
   const D=$('dots');
   if(!D.children.length){
     for(let i=0;i<TARGET;i++)D.appendChild(document.createElement('span'));
   }
   [...D.children].forEach((s,i)=>s.classList.toggle('hit',i<score));
-  $('scoretxt').textContent=score+'/'+TARGET+' '+T('correct','aciertos');
+  const a=ALLOW[level];
+  $('scoretxt').textContent=
+    T('level ','nivel ')+(level+1)+' · '+score+'/'+TARGET+' · '+
+    (a===0?T('no mistakes allowed!','¡sin fallos permitidos!')
+          :T('tries: ','intentos: ')+Math.min(errs,a)+' '+T('of','de')+' '+a);
 }
 function toggleGame(){
   game=!game;
@@ -508,16 +546,69 @@ function toggleGame(){
   $('scorebox').classList.toggle('visible',game);
   $('guessrow').classList.toggle('visible',game);
   runId++;anim=null;paused=false;
-  if(game){score=0;renderScore();reshuffle();newMystery();}
+  celebrating=false;
+  if(game){level=0;errs=0;score=0;renderScore();reshuffle();newMystery();}
   else autoAdvance();
+  updateHints();
 }
 function newMystery(){
+  if(celebrating)return;
   mystery=nextEvent();
   awaiting=true;
+  replays=0;
   play(mystery,true);
 }
+function cutPlayback(){
+  if(anim){ghost={lit:anim.lit,start:performance.now()};anim=null;runId++;}
+  if(runGain)runGain.gain.setTargetAtTime(0,AC.currentTime,0.07);
+}
+function replayMystery(){
+  if(!game||!mystery||!awaiting||celebrating)return;
+  replays++;
+  if(replays>1){ // first replay is free; from then on it costs a visible try
+    errs++;
+    renderScore();
+    if(errs>ALLOW[level]){failLevel();return;}
+  }
+  cutPlayback();
+  play(mystery,true);
+}
+function failLevel(){
+  awaiting=false;
+  cutPlayback();
+  jingle('bad');
+  $('desc').innerHTML='<b style="color:var(--hadron)">'+
+    T('Out of tries! Back to level 1.','¡Se acabaron los intentos! De vuelta al nivel 1.')+'</b>';
+  level=0;errs=0;score=0;replays=0;
+  renderScore();updateHints();
+  setTimeout(()=>{if(game&&!anim&&!awaiting)newMystery();},1700);
+}
+function celebrate(){
+  // dense gamma sweeps, back to back, then congratulations
+  celebrating=true;awaiting=false;
+  const gs=events.g.slice();
+  for(let i=gs.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[gs[i],gs[j]]=[gs[j],gs[i]];}
+  const picks=gs.slice(0,3), FAST=BASE_DUR*0.42;
+  $('desc').innerHTML='<b style="color:var(--gamma)">'+T('Perfect run!','¡Ronda perfecta!')+'</b>';
+  let t=300;
+  for(const ev of picks){
+    setTimeout(()=>{if(game)play(ev,false,FAST);},t);
+    t+=FAST+250;
+  }
+  setTimeout(()=>{
+    if(!game)return;
+    $('desc').innerHTML='<b style="color:var(--acc)">'+
+      T('Congratulations! You read the whole sky by ear.','¡Felicidades! Leíste todo el cielo de oído.')+'</b>';
+    jingle('win10');
+  },t+200);
+  setTimeout(()=>{
+    if(!game)return;
+    celebrating=false;level=0;errs=0;score=0;renderScore();
+    if(!anim&&!awaiting)newMystery();
+  },t+2600);
+}
 function guess(g2){
-  if(!awaiting||!mystery)return;
+  if(!awaiting||!mystery||celebrating)return;
   awaiting=false;
   const ok=g2===mystery.t;
   let prefix;
@@ -528,29 +619,37 @@ function guess(g2){
     else jingle('win');
     prefix='<b style="color:var(--gamma)">'+T('✓ correct!','✓ ¡correcto!')+'</b> ';
   }else{
+    errs++;
     jingle('bad');
     prefix='<b style="color:var(--hadron)">'+T('✗ it was…','✗ era…')+'</b> ';
   }
   describe(mystery,false,prefix);
+  $('desc').innerHTML+=' <span class="resdet">'+T('of ','de ')+energyStr(mystery)+' · '+
+    T('arrival ','llegada a ')+mystery.z.toFixed(0)+'°</span>';
   renderScore();
+  updateHints();
+  flashCounter(ok);
+  if(!ok&&errs>ALLOW[level]){failLevel();return;}
   // pop the dot that just lit; the 5th gets the big momentary pop
   if(ok){
     const dot=$('dots').children[score-1];
     if(dot){dot.classList.add('pop');setTimeout(()=>dot.classList.remove('pop'),score===5?650:380);}
   }
-  // hand the current cascade to the ghost and cut its remaining notes
-  if(anim){ghost={lit:anim.lit,start:performance.now()};anim=null;runId++;}
-  if(runGain)runGain.gain.setTargetAtTime(0,AC.currentTime,0.07);
+  cutPlayback();
   if(score>=TARGET){
+    if(level>=ALLOW.length-1){setTimeout(celebrate,900);return;}
+    level++;errs=0;score=0;
+    updateHints();
     setTimeout(()=>{
       $('desc').innerHTML='<b style="color:var(--acc)">'+
-        T('You completed the sky — 10 cascades read by ear!','¡Completaste el cielo — 10 cascadas leídas de oído!')+'</b>';
-      score=0;renderScore();
-      setTimeout(()=>{if(game&&!anim&&!awaiting)newMystery();},2000);
-    },1400);
+        T('Level up! Now with ','¡Nivel superado! Ahora con ')+ALLOW[level]+
+        (ALLOW[level]===0?T(' mistakes allowed.',' fallos permitidos.'):T(' tries.',' intentos.'));
+      renderScore();
+      setTimeout(()=>{if(game&&!anim&&!awaiting)newMystery();},1900);
+    },1100);
     return;
   }
-  setTimeout(()=>{if(game&&!anim&&!awaiting)newMystery();},350); // next cascade right away
+  setTimeout(()=>{if(game&&!anim&&!awaiting)newMystery();},950); // brief beat, then the next one
 }
 
 // ===================== ui =====================
@@ -668,6 +767,8 @@ function enter(){
     }
   });
 }
+$('hintlink').addEventListener('click',()=>$('hintbox').classList.toggle('open'));
+$('hintlink').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('hintbox').classList.toggle('open');}});
 $('desc').addEventListener('click',e=>{
   const w=e.target.closest('.who');
   if(!w||!lastDesc||lastDesc.hide)return;
@@ -799,6 +900,7 @@ cv.addEventListener('click',e=>{
   const u=(mx/r.width-MX)/(1-2*MX);
   const v=(my/r.height-MYT)/SY;
   if(!(u>-0.06&&u<1.06&&v>-0.06&&v<1.06))return;
+  if(game){replayMystery();return;} // in the game, the array replays the mystery
   if(COARSE&&anim){
     if(!paused){
       pauseResume();           // first tap freezes the event...
@@ -808,7 +910,7 @@ cv.addEventListener('click',e=>{
     }
     return;
   }
-  if(anim)pauseResume(); else if(game)newMystery(); else autoAdvance();
+  if(anim)pauseResume(); else autoAdvance();
 });
 window.addEventListener('resize',resize);
 $('btnMute').innerHTML=SPK_ON;
