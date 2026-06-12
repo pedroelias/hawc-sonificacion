@@ -44,7 +44,7 @@
                      background:var(--ink);color:var(--bg);font-family:inherit;transition:opacity .2s}
   .intro-card button:hover{opacity:.85}
   .stage{position:relative;width:min(94vw,880px)}
-  .tip{position:absolute;display:none;pointer-events:none;z-index:5;max-width:332px;
+  .tip{position:absolute;display:none;pointer-events:none;z-index:5;max-width:min(332px,calc(100vw - 28px));
        background:#fffaf0;border:1px solid var(--line);border-radius:10px;padding:10px 12px;
        font-size:12.5px;line-height:1.5;color:var(--ink);text-align:left;
        box-shadow:0 8px 22px rgba(120,90,60,.14)}
@@ -187,6 +187,7 @@ for(const A of [PMT,TANK])for(const p of A){p[0]=1-p[0];p[1]=1-p[1];}
 const $=id=>document.getElementById(id);
 const cv=$('cv'), ctx=cv.getContext('2d');
 let lang='es', started=false, muted=false;
+const COARSE=!!(window.matchMedia&&window.matchMedia('(hover: none), (pointer: coarse)').matches); // phones/tablets
 let game=false, mystery=null, awaiting=false, score=0;
 const TARGET=10;
 const BASE_DUR=5400;
@@ -349,7 +350,7 @@ function ensureBase(){
 const isLate=(ev,tn)=>ev.t==='h'&&tn>0.72;
 function ensureAudio(){
   if(AC)return;
-  AC=new (window.AudioContext||window.webkitAudioContext)();
+  AC=new (window.AudioContext||window.webkitAudioContext)({latencyHint:'playback'}); // bigger buffers: fewer dropouts on phones
   const comp=AC.createDynamicsCompressor();
   master=AC.createGain();master.gain.value=muted?0:0.85;
   const dly=AC.createDelay(0.6);dly.delayTime.value=0.21;
@@ -429,7 +430,8 @@ function play(ev,hideType){
   runGain=AC.createGain();runGain.connect(master);
   const hits=ev.ph, dur=BASE_DUR;
   const t0=AC.currentTime+0.12;
-  const stp=Math.max(1,Math.ceil(hits.length/130));
+  const NB=COARSE?85:130; // audio note budget (lighter on mobile)
+  const stp=Math.max(1,Math.ceil(hits.length/NB));
   for(let i=0;i<hits.length;i++){
     const late=isLate(ev,hits[i][1]);
     if(late||i%stp===0)pluck(t0+hits[i][1]*dur/1000,hits[i][2],late); // every straggler buzzes
@@ -748,18 +750,16 @@ function tankSVG(o){
   }
   return s+'</svg>';
 }
-cv.addEventListener('mousemove',e=>{
-  if(!paused||!anim){hideTip();return;}
-  const r=cv.getBoundingClientRect();
-  const mx=e.clientX-r.left,my=e.clientY-r.top;
-  const Rt=pitchPx()*0.52;
+// returns true if a tank sits under (mx,my) and the tooltip was shown for it
+function tankTipAt(mx,my,r){
+  const Rt=pitchPx()*(COARSE?0.8:0.52); // fatter target for fingers
   let ti=-1,bd=1e9;
   for(let i=0;i<TGEO.length;i++){
     const [x,y]=px(TGEO[i]);
     const d=Math.hypot(mx-x,my-y);
     if(d<bd){bd=d;ti=i;}
   }
-  if(ti<0||bd>Rt){hideTip();return;}
+  if(ti<0||bd>Rt){hideTip();return false;}
   let n=0,centralFired=false;
   for(const k in anim.lit)if(PMAP[k]===ti){n++;if(CFLAG&&CFLAG[k])centralFired=true;}
   const tip=$('tip');
@@ -780,18 +780,35 @@ cv.addEventListener('mousemove',e=>{
   }
   tip.innerHTML='<div class="tipwrap">'+svg+'<div>'+text+'</div></div>';
   tip.style.display='block';
-  tip.style.left=Math.max(6,Math.min(mx+15,r.width-344))+'px';
-  tip.style.top=(my+16+118>r.height ? my-118 : my+16)+'px';
+  const tw=tip.offsetWidth||332, th=tip.offsetHeight||118;
+  tip.style.left=Math.max(6,Math.min(mx+15,r.width-tw-10))+'px';
+  tip.style.top=(my+16+th>r.height ? Math.max(6,my-th-12) : my+16)+'px';
+  return true;
+}
+cv.addEventListener('mousemove',e=>{
+  if(COARSE)return; // touch devices use taps instead
+  if(!paused||!anim){hideTip();return;}
+  const r=cv.getBoundingClientRect();
+  tankTipAt(e.clientX-r.left,e.clientY-r.top,r);
 });
-cv.addEventListener('mouseleave',hideTip);
+cv.addEventListener('mouseleave',()=>{if(!COARSE)hideTip();});
 cv.addEventListener('click',e=>{
   if(!started)return;
   const r=cv.getBoundingClientRect();
-  const u=((e.clientX-r.left)/r.width-MX)/(1-2*MX);
-  const v=((e.clientY-r.top)/r.height-MYT)/SY;
-  if(u>-0.06&&u<1.06&&v>-0.06&&v<1.06){
-    if(anim)pauseResume(); else if(game)newMystery(); else autoAdvance();
+  const mx=e.clientX-r.left,my=e.clientY-r.top;
+  const u=(mx/r.width-MX)/(1-2*MX);
+  const v=(my/r.height-MYT)/SY;
+  if(!(u>-0.06&&u<1.06&&v>-0.06&&v<1.06))return;
+  if(COARSE&&anim){
+    if(!paused){
+      pauseResume();           // first tap freezes the event...
+      tankTipAt(mx,my,r);      // ...and explains the tapped tank right away
+    }else if(!tankTipAt(mx,my,r)){
+      pauseResume();           // tap on empty space resumes
+    }
+    return;
   }
+  if(anim)pauseResume(); else if(game)newMystery(); else autoAdvance();
 });
 window.addEventListener('resize',resize);
 $('btnMute').innerHTML=SPK_ON;
